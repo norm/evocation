@@ -3,6 +3,7 @@ from django.db import models
 from django.utils import timezone
 
 from taggit.managers import TaggableManager
+from taggit.utils import parse_tags
 
 
 class Bookmark(models.Model):
@@ -12,6 +13,18 @@ class Bookmark(models.Model):
     date_added = models.DateTimeField(default=timezone.now)
     last_updated = models.DateTimeField(auto_now=True)
     tags = TaggableManager()
+
+    def add_tag(self, tag):
+        self.tags.add(tag)
+        self.save()
+
+    def add_tags(self, tags_string):
+        for tag in parse_tags(tags_string):
+            self.add_tag(tag)
+
+    def remove_tag(self, tag):
+        self.tags.remove(tag)
+        self.save()
 
     def get_absolute_url(self):
         return reverse('bookmark-detail', kwargs={'pk': self.pk})

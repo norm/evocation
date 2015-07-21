@@ -3,9 +3,24 @@
 {% if bookmark.tags %}
   <ul>
     {% for tag in bookmark.tags.all %}
-      <li>{{tag}}</li>
+      <li>
+        {{tag}}
+        <form method='post' action='{% url "bookmark-tag-update" bookmark.pk %}'>
+          {% csrf_token %}
+          <input type='hidden' name='update' value='remove'>
+          <input type='hidden' name='tags' value='{{tag}}'>
+          <button>Remove tag</button>
+        </form>
+        </li>
     {% endfor %}
   </ul>
 {% endif %}
 
 <p>{{bookmark.date_added}} — {{bookmark.last_updated}}</p>
+
+<form method='post' action='{% url "bookmark-tag-update" bookmark.pk %}'>
+  {% csrf_token %}
+  <input type='hidden' name='update' value='add'>
+  <input type='text' name='tags'>
+  <button>Add tags</button>
+</form>
