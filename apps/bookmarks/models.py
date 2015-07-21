@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
 
@@ -11,6 +12,9 @@ class Bookmark(models.Model):
     date_added = models.DateTimeField(default=timezone.now)
     last_updated = models.DateTimeField(auto_now=True)
     tags = TaggableManager()
+
+    def get_absolute_url(self):
+        return reverse('bookmark-detail', kwargs={'pk': self.pk})
 
     def __unicode__(self):
         if self.title:

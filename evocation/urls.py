@@ -16,7 +16,12 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 
-from apps.bookmarks.views import BookmarkView, BookmarkList
+from apps.bookmarks.views import (
+    BookmarkCreate,
+    BookmarkList,
+    BookmarkUpdate,
+    BookmarkView,
+)
 
 
 urlpatterns = [
@@ -28,8 +33,18 @@ urlpatterns = [
             name='bookmark-list',
     ),
     url(
-        r'^bookmark/(?P<pk>[\d]+$)',
+        r'^bookmark/new$',
+            BookmarkCreate.as_view(),
+            name='bookmark-create',
+    ),
+    url(
+        r'^bookmark/(?P<pk>\d+)/$',
             BookmarkView.as_view(),
             name='bookmark-detail',
+    ),
+    url(
+        r'^bookmark/(?P<pk>\d+)/edit/$',
+            BookmarkUpdate.as_view(),
+            name='bookmark-update',
     ),
 ]
