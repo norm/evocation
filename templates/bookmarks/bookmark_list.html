@@ -1,0 +1,3 @@
+{% for bookmark in object_list %}
+  <li><a href='{% url "bookmark-detail" bookmark.pk %}'>{{bookmark}}</a></li>
+{% endfor %}

@@ -16,6 +16,20 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 
+from apps.bookmarks.views import BookmarkView, BookmarkList
+
+
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
+
+    url(
+        r'^bookmark/$',
+            BookmarkList.as_view(),
+            name='bookmark-list',
+    ),
+    url(
+        r'^bookmark/(?P<pk>[\d]+$)',
+            BookmarkView.as_view(),
+            name='bookmark-detail',
+    ),
 ]
