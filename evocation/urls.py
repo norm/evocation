@@ -83,4 +83,6 @@ urlpatterns = [
             TaggedList.as_view(),
             name='tagged-list',
     ),
+
+    url(r'^search/', include('haystack.urls')),
 ]

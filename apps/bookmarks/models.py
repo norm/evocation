@@ -29,6 +29,9 @@ class Bookmark(models.Model):
     def get_absolute_url(self):
         return reverse('bookmark-detail', kwargs={'pk': self.pk})
 
+    def name(self):
+        return self.__unicode__()
+
     def __unicode__(self):
         if self.title:
             return self.title

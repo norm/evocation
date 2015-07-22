@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'apps.bookmarks',
 
     'taggit',
+    'haystack',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -110,3 +111,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 TAGGIT_CASE_INSENSITIVE = True
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'xapian_backend.XapianEngine',
+        'PATH': os.path.join(os.path.dirname(__file__), 'xapian_index'),
+    },
+}
