@@ -22,6 +22,9 @@ from apps.bookmarks.views import (
     BookmarkUpdate,
     BookmarkTagUpdate,
     BookmarkView,
+    BookmarkYearList,
+    BookmarkMonthList,
+    BookmarkDayList,
     TagsList,
     TaggedList,
 )
@@ -41,17 +44,32 @@ urlpatterns = [
             name='bookmark-create',
     ),
     url(
-        r'^bookmark/(?P<pk>\d+)/$',
+        r'^bookmark/(?P<year>[0-9]{4})/$',
+            BookmarkYearList.as_view(),
+            name='bookmark-by-year',
+    ),
+    url(
+        r'^bookmark/(?P<year>[0-9]{4})/(?P<month>[0-9]{2})/$',
+            BookmarkMonthList.as_view(),
+            name='bookmark-by-month',
+    ),
+    url(
+        r'^bookmark/(?P<year>[0-9]{4})/(?P<month>[0-9]{2})/(?P<day>[0-9]{2})/$',
+            BookmarkDayList.as_view(),
+            name='bookmark-by-day',
+    ),
+    url(
+        r'^bookmark/id/(?P<pk>\d+)/$',
             BookmarkView.as_view(),
             name='bookmark-detail',
     ),
     url(
-        r'^bookmark/(?P<pk>\d+)/edit/$',
+        r'^bookmark/id/(?P<pk>\d+)/edit/$',
             BookmarkUpdate.as_view(),
             name='bookmark-update',
     ),
     url(
-        r'^bookmark/(?P<pk>\d+)/edit/tags/$',
+        r'^bookmark/id/(?P<pk>\d+)/edit/tags/$',
             BookmarkTagUpdate.as_view(),
             name='bookmark-tag-update',
     ),

@@ -4,6 +4,9 @@ from django.views.generic import (
     DetailView,
     ListView,
     UpdateView,
+    YearArchiveView,
+    MonthArchiveView,
+    DayArchiveView,
 )
 from django.views.generic.detail import SingleObjectMixin
 
@@ -52,6 +55,29 @@ class BookmarkTagUpdate(UpdateView):
 
 class BookmarkList(ListView):
     model = Bookmark
+
+
+class BookmarkYearList(YearArchiveView):
+    model = Bookmark
+    date_field = 'date_added'
+    make_object_list = True
+    queryset = Bookmark.objects.all()
+
+
+class BookmarkMonthList(MonthArchiveView):
+    model = Bookmark
+    date_field = 'date_added'
+    make_object_list = True
+    queryset = Bookmark.objects.all()
+    month_format = '%m'
+
+
+class BookmarkDayList(DayArchiveView):
+    model = Bookmark
+    date_field = 'date_added'
+    make_object_list = True
+    queryset = Bookmark.objects.all()
+    month_format = '%m'
 
 
 class TagsList(ListView):
