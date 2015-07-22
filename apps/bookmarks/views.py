@@ -5,8 +5,10 @@ from django.views.generic import (
     ListView,
     UpdateView,
 )
+from django.views.generic.detail import SingleObjectMixin
 
 from .models import Bookmark
+from taggit.models import Tag
 
 
 class BookmarkView(DetailView):
@@ -50,3 +52,15 @@ class BookmarkTagUpdate(UpdateView):
 
 class BookmarkList(ListView):
     model = Bookmark
+
+
+class TagsList(ListView):
+    model = Tag
+
+
+class TaggedList(SingleObjectMixin, ListView):
+    template_name = 'taggit/tagged_list.html'
+
+    def get_queryset(self):
+        self.object = self.get_object(Tag.objects.all())
+        return self.object.taggit_taggeditem_items.all()

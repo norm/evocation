@@ -22,6 +22,8 @@ from apps.bookmarks.views import (
     BookmarkUpdate,
     BookmarkTagUpdate,
     BookmarkView,
+    TagsList,
+    TaggedList,
 )
 
 
@@ -52,5 +54,15 @@ urlpatterns = [
         r'^bookmark/(?P<pk>\d+)/edit/tags/$',
             BookmarkTagUpdate.as_view(),
             name='bookmark-tag-update',
+    ),
+    url(
+        r'^tag/$',
+            TagsList.as_view(),
+            name='tags-list',
+    ),
+    url(
+        r'^tag/(?P<slug>[A-Za-z0-9-]+)$',
+            TaggedList.as_view(),
+            name='tagged-list',
     ),
 ]
