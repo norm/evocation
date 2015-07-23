@@ -1,4 +1,10 @@
 <h1><a href='{{bookmark.url}}'>{{bookmark}}</a></h1>
+{% if bookmark.latest_archive %}
+  {% if bookmark.latest_archive.thumbnail %}
+    <img src='{{bookmark.latest_archive.thumbnail.url}}'>
+  {% endif %}
+{% endif %}
+
 <p>{{bookmark.description}}</p>
 {% if bookmark.tags %}
   <ul>
