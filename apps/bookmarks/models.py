@@ -12,6 +12,8 @@ from django.utils import timezone
 from taggit.managers import TaggableManager
 from taggit.utils import parse_tags
 
+from .tasks import update_bookmark_archive
+
 
 class Bookmark(models.Model):
     url = models.URLField(max_length=2000)
@@ -41,7 +43,7 @@ class Bookmark(models.Model):
         return reverse('bookmark-detail', kwargs={'pk': self.pk})
 
     def update_archive(self):
-        self.archives.create()
+        update_bookmark_archive.delay(self.pk)
 
     def create_first_archive(self):
         if self.archives.count() == 0:

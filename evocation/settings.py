@@ -121,3 +121,5 @@ HAYSTACK_CONNECTIONS = {
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+BROKER_URL ='redis://localhost:6379/1'

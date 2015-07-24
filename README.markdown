@@ -15,6 +15,11 @@ database and user:
     create user evocation;
     grant all privileges on database evocation to evocation;
 
+Have redis (evocation uses database 1 to keep celery information in):
+
+    brew install redis
+    # follow the instructions for starting redis
+
 Install pre-requisite OS X software with homebrew:
 
     brew install libtiff libjpeg webp little-cms2 webkit2png xapian
