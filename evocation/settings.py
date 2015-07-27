@@ -43,6 +43,7 @@ INSTALLED_APPS = (
     'concertina',
     'taggit',
     'haystack',
+    'celery_haystack',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -119,6 +120,7 @@ HAYSTACK_CONNECTIONS = {
         'PATH': os.path.join(os.path.dirname(__file__), 'xapian_index'),
     },
 }
+HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'

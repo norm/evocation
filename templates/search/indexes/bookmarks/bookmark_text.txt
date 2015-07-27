@@ -1,3 +1,5 @@
 {{object.title}}
+{{object.archived_title}}
 {{object.description}}
 {{object.url}}
+{{object.archived_text}}

@@ -8,3 +8,6 @@ Pillow==2.9.0
 celery==3.1.18
 redis==2.10.3
 django-concertina==1.0.0
+biplist==0.9
+beautifulsoup4==4.4.0
+celery-haystack==0.9

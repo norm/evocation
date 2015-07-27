@@ -1,6 +1,8 @@
 import os
 import subprocess
 
+from biplist import readPlist as read_plist
+from bs4 import BeautifulSoup
 from tempfile import mkstemp
 
 from django.conf import settings
@@ -55,6 +57,29 @@ class Bookmark(models.Model):
         else:
             return None
 
+    def archived_title(self):
+        body = self.get_archive_body()
+        if body is not None:
+            soup = BeautifulSoup(body, 'html.parser')
+            return soup.title.text
+        return None
+
+    def archived_text(self):
+        body = self.get_archive_body()
+        if body is not None:
+            soup = BeautifulSoup(body, 'html.parser')
+            for element in soup(['script', 'style', 'svg']):
+                element.replace_with('')
+            return soup.body.get_text()
+        return None
+
+    def get_archive_body(self):
+        latest = self.latest_archive()
+        if latest is not None and latest.archive:
+            plist = read_plist(latest.archive.file)
+            return plist['WebMainResource']['WebResourceData']
+        return None
+
     def name(self):
         return self.__unicode__()
 
@@ -100,6 +125,14 @@ class BookmarkArchive(models.Model):
             self.archive.save(filename, model_file)
 
         os.remove(temp_file)
+
+        # check for a title if we don't already have one
+        if not self.bookmark.title:
+            self.bookmark.title = self.bookmark.archived_title()
+
+        # updates last_updated and triggers search reindex, so
+        # the body text is now included in search model
+        self.bookmark.save()
 
     def take_screengrab(self):
         if not self.archive:
