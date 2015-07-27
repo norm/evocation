@@ -53,6 +53,11 @@ Run the app:
 
     honcho start
 
+If you use it, export [your bookmarks][pinboard] from Pinboard as JSON and
+then import them:
+
+    python manage.py import_pinboard format-json.json
 
 [pga]: http://postgresapp.com
 [wa]: http://www.chainsawonatireswing.com/2013/11/17/how-to-save-a-perfectly-scraped-webpage-into-devonthink/#needed-command-line-software
+[pinboard]: https://pinboard.in/export/
