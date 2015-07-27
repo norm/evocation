@@ -40,6 +40,7 @@ INSTALLED_APPS = (
 
     'apps.bookmarks',
 
+    'concertina',
     'taggit',
     'haystack',
 )

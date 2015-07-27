@@ -7,3 +7,4 @@ git+https://github.com/notanumber/xapian-haystack.git
 Pillow==2.9.0
 celery==3.1.18
 redis==2.10.3
+django-concertina==1.0.0

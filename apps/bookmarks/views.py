@@ -55,6 +55,7 @@ class BookmarkTagUpdate(UpdateView):
 
 class BookmarkList(ListView):
     model = Bookmark
+    paginate_by = 20
 
 
 class BookmarkYearList(YearArchiveView):
@@ -62,6 +63,7 @@ class BookmarkYearList(YearArchiveView):
     date_field = 'date_added'
     make_object_list = True
     queryset = Bookmark.objects.all()
+    paginate_by = 20
 
 
 class BookmarkMonthList(MonthArchiveView):
@@ -70,6 +72,7 @@ class BookmarkMonthList(MonthArchiveView):
     make_object_list = True
     queryset = Bookmark.objects.all()
     month_format = '%m'
+    paginate_by = 20
 
 
 class BookmarkDayList(DayArchiveView):
@@ -78,14 +81,17 @@ class BookmarkDayList(DayArchiveView):
     make_object_list = True
     queryset = Bookmark.objects.all()
     month_format = '%m'
+    paginate_by = 20
 
 
 class TagsList(ListView):
     model = Tag
+    paginate_by = 20
 
 
 class TaggedList(SingleObjectMixin, ListView):
     template_name = 'taggit/tagged_list.html'
+    paginate_by = 20
 
     def get_queryset(self):
         self.object = self.get_object(Tag.objects.all())

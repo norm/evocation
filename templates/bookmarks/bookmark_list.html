@@ -1,3 +1,12 @@
+{% load concertina_pagination %}
+
+<ul>
+{% for page in page_obj|concertina_pagination %}
+  <li><a href='?page={{page}}'>{{page}}</a></li>
+{% endfor %}
+</ul>
+<hr>
+
 {% for bookmark in object_list %}
   <li>
     <h1><a href='{% url "bookmark-detail" bookmark.pk %}'>{{bookmark}}</a></h1>
