@@ -18,7 +18,7 @@ from .tasks import update_bookmark_archive
 
 
 class Bookmark(models.Model):
-    url = models.URLField(max_length=2000)
+    url = models.URLField(max_length=2000, unique=True)
     title = models.CharField(max_length=1024, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     date_added = models.DateTimeField(default=timezone.now)
