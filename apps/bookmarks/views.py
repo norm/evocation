@@ -28,9 +28,16 @@ class BookmarkCreate(CreateView):
         form = self.get_form()
         errors = form.errors.as_data()
 
+        # empty tag field is not an error
+        no_tags = 'tags' not in form.cleaned_data
+        if no_tags:
+            form.cleaned_data.update({'tags': []})
+            del form.errors['tags']
+            del errors['tags']
+
         # check if no extra information was filled out
         no_other_info = (
-            'tags' not in form.cleaned_data
+            no_tags
             and not form.cleaned_data['description']
             and not form.cleaned_data['title']
         )
