@@ -1,3 +1,7 @@
+{% if bookmark %}
+  <a href='{{bookmark.get_absolute_url}}'>{{bookmark}}</a>
+{% endif %}
+
 <form method="post" action="">
   {% csrf_token %}
   {{ form }}

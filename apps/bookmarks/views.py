@@ -21,6 +21,38 @@ class BookmarkView(DetailView):
 class BookmarkCreate(CreateView):
     model = Bookmark
     fields = ['url', 'title', 'description', 'tags']
+    bookmark = None
+
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        form = self.get_form()
+        errors = form.errors.as_data()
+
+        # check if no extra information was filled out
+        no_other_info = (
+            'tags' not in form.cleaned_data
+            and not form.cleaned_data['description']
+            and not form.cleaned_data['title']
+        )
+
+        if errors.keys() == ['url'] and errors['url'][0].code == 'unique':
+            bookmark = Bookmark.objects.get(url=form.data['url'])
+            if no_other_info:
+                # go to existing bookmark if all you've posted is the url
+                return HttpResponseRedirect(bookmark.get_absolute_url())
+            else:
+                # make existing bookmark available for use in the form error
+                self.bookmark = bookmark
+
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(BookmarkCreate, self).get_context_data(**kwargs)
+        context['bookmark'] = self.bookmark
+        return context
 
 
 class BookmarkUpdate(UpdateView):
