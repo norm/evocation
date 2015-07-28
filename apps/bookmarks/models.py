@@ -1,11 +1,15 @@
+# encoding: utf-8
+
 import os
 import subprocess
 
 from biplist import readPlist as read_plist
 from bs4 import BeautifulSoup
+from redis import Redis
 from tempfile import mkstemp
 
 from django.conf import settings
+from django.contrib.sites.models import get_current_site
 from django.core.files import File
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -17,7 +21,23 @@ from taggit.utils import parse_tags
 from .tasks import update_bookmark_archive
 
 
-class Bookmark(models.Model):
+class PubSubMixin(object):
+    def save(self, *args, **kwargs):
+        super(PubSubMixin, self).save(*args, **kwargs)
+        self.publish_save_message()
+
+    def publish_save_message(self):
+        self.publish_message(self.save_message_text())
+
+    def publish_message(self, text, channel='chatter.evocation'):
+        redis = Redis()
+        redis.publish(channel, text)
+
+    def save_message_text(self):
+        return u'Saved %s' % (self.__unicode__())
+
+
+class Bookmark(PubSubMixin, models.Model):
     url = models.URLField(max_length=2000, unique=True)
     title = models.CharField(max_length=1024, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
@@ -80,6 +100,9 @@ class Bookmark(models.Model):
             return plist['WebMainResource']['WebResourceData']
         return None
 
+    def save_message_text(self):
+        return u'Saved %s — %s' % (self.__unicode__(), self.get_absolute_url())
+
     def name(self):
         return self.__unicode__()
 
@@ -93,7 +116,7 @@ class Bookmark(models.Model):
         ordering = ["-date_added"]
 
 
-class BookmarkArchive(models.Model):
+class BookmarkArchive(PubSubMixin, models.Model):
     bookmark = models.ForeignKey(Bookmark, related_name='archives')
     taken = models.DateTimeField(default=timezone.now)
     archive = models.FileField(upload_to='bookmark/%Y/%m/%d', null=True, blank=True)
@@ -125,6 +148,8 @@ class BookmarkArchive(models.Model):
             self.archive.save(filename, model_file)
 
         os.remove(temp_file)
+
+        self.publish_message('Fetched archive of %s' % self.bookmark.url)
 
         # check for a title if we don't already have one
         if not self.bookmark.title:
@@ -166,6 +191,9 @@ class BookmarkArchive(models.Model):
             self.thumbnail.save(filename, model_file)
 
         os.remove(temp_file)
+
+    def publish_save_message(self):
+        pass
 
     def __unicode__(self):
         taken = self.taken.strftime('%FT%T')
