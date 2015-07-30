@@ -19,11 +19,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '2#hv9db*!w4d+0)hysvlp&(akae+(j7xq515=a3jzk-uv-pzi1'
-
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = 'true' == os.getenv('DEBUG')
+
+if DEBUG:
+    SECRET_KEY = '2#hv9db*!w4d+0)hysvlp&(akae+(j7xq515=a3jzk-uv-pzi1'
+else:
+    SECRET_KEY = os.environ['EVOCATION_SECRET_KEY']
 
 ALLOWED_HOSTS = []
 
@@ -84,8 +86,8 @@ WSGI_APPLICATION = 'evocation.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'evocation',
-        'USER': 'evocation',
+        'NAME': os.getenv('EVOCATION_DB', 'evocation'),
+        'USER': os.getenv('EVOCATION_DB_USER', 'evocation'),
         'PASSWORD': '',
         'HOST': '',
         'PORT': '',
@@ -125,4 +127,4 @@ HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
-BROKER_URL ='redis://localhost:6379/1'
+BROKER_URL = os.getenv('EVOCATION_REDIS_DB', 'redis://localhost:6379/1')

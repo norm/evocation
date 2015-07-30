@@ -11,3 +11,4 @@ django-concertina==1.0.0
 biplist==0.9
 beautifulsoup4==4.4.0
 celery-haystack==0.9
+gunicorn==19.3.0

@@ -51,7 +51,11 @@ Setup the database tables:
 
 Run the app:
 
+    # in production
     honcho start
+
+    # whilst developing
+    honcho -e env -f Procfile.dev start
 
 If you use it, export [your bookmarks][pinboard] from Pinboard as JSON and
 then import them:
