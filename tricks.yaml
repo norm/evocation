@@ -1,0 +1,4 @@
+tricks:
+- tricks.MakeTrick:
+    target: 'css'
+    patterns: ['*.scss']
