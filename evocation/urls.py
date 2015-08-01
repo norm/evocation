@@ -30,10 +30,16 @@ from apps.bookmarks.views import (
     TagsList,
     TaggedList,
 )
+from evocation.views import homepage_redirect
 
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
+
+    url(
+        r'^$',
+            homepage_redirect
+    ),
 
     url(
         r'^bookmark/$',
