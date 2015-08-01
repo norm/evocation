@@ -1,0 +1,91 @@
+body.bookmark {
+
+    div.details {
+        width: 50%;
+        float: left;
+    }
+
+    h1 {
+        font-weight: normal;
+        color: #ccc;
+        margin-bottom: $base_line * 2;
+
+        em {
+            display: block;
+            font-size: $headline_font;
+            font-style: normal;
+        }
+
+        code {
+            font-size: 14px;
+        }
+    }
+
+    h2 {
+        @include hide-content;
+    }
+
+    .description {
+        margin: $base_line 0;
+    }
+
+
+    dt {
+        min-width: 80px;
+        float: left;
+        clear: left;
+    }
+
+    div.tags {
+        margin-top: $base_line * 2;
+
+        a {
+            display: inline;
+        }
+
+        li {
+            padding-left: 30px;
+            clear: left;
+            line-height: 1.6;
+
+            form {
+                display: inline;
+            }
+
+            button {
+                background: transparent;
+                padding: 0;
+                color: white;
+                float: left;
+                margin-left: -20px;
+
+                &:after {
+                    content: 'x';
+                    font-weight: bold;
+                }
+            }
+        }
+
+        > form {
+            padding-left: 30px;
+            margin-top: $base_line;
+        }
+    }
+
+    div.archive {
+        float: right;
+        width: calc(50% - 30px);
+        padding-top: $base_line * 1.5;
+
+        a {
+            color: #aaf;
+        }
+
+        img {
+            display: block;
+            margin: 1em 0;
+            width: 100%;
+            box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.5);
+        }
+    }
+}

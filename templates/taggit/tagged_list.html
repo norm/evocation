@@ -1,7 +1,3 @@
-<h1>{{object}}</h1>
+{% extends "bookmarks/bookmark_list.html" %}
 
-<ul>
-  {% for item in object_list %}
-    <li><a href='{{item.content_object.get_absolute_url}}'>{{item.content_object}}</a></li>
-  {% endfor %}
-</ul>
+{% block matching_bookmarks %}Bookmarks tagged {{object}}{% endblock %}

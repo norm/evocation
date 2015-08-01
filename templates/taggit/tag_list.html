@@ -1,5 +1,9 @@
-<ul>
-  {% for tag in object_list %}
-    <li><a href='{% url "tagged-list" tag.slug %}'>{{tag}}</a></li>
-  {% endfor %}
-</ul>
+{% extends "base.html" %}
+
+{% block body %}
+  <ul>
+    {% for tag in object_list %}
+      <li><a href='{% url "tagged-list" tag.slug %}'>{{tag}}</a></li>
+    {% endfor %}
+  </ul>
+{% endblock %}

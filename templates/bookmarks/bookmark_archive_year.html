@@ -1,13 +1,4 @@
-{% for bookmark in object_list %}
-  <li>
-    <h1><a href='{% url "bookmark-detail" bookmark.pk %}'>{{bookmark}}</a></h1>
-    <p>{{bookmark.description}}</p>
-    <ul>
-      {% for tag in bookmark.tags.all %}
-        <li>
-          <a href='{% url "tagged-list" tag.slug %}'>{{tag}}</a>
-        </li>
-      {% endfor %}
-    </ul>
-  </li>
-{% endfor %}
+{% extends "bookmarks/bookmark_list.html" %}
+{% load aggregation %}
+
+{% block matching_bookmarks %}Bookmarks from {{year|date:'Y'}}{% endblock %}

@@ -1,0 +1,21 @@
+body.bookmarks.list {
+    #body {
+        padding-left: 240px;
+        margin-top: -2 * $base_line;
+    }
+
+    h1 {
+        // @include hide-content;
+        margin-top: 2 * $base_line;
+        margin-bottom: $base_line;
+    }
+
+    #subnav {
+        margin-left: -210px;
+        width: 210px;
+        float: left;
+    }
+
+    #tags {
+    }
+}

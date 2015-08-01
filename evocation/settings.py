@@ -21,6 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = 'true' == os.getenv('DEBUG')
+TEMPLATE_DEBUG = DEBUG
 
 if DEBUG:
     SECRET_KEY = '2#hv9db*!w4d+0)hysvlp&(akae+(j7xq515=a3jzk-uv-pzi1'
@@ -46,6 +47,8 @@ INSTALLED_APPS = (
     'taggit',
     'haystack',
     'celery_haystack',
+    'django_cape',
+    'render_as',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -72,6 +75,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'apps.bookmarks.context_processors.total'
             ],
         },
     },

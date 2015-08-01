@@ -1,3 +1,88 @@
-html {
-    background: #ccc;
+$base_font: 16px;
+$headline_font: 48px;
+$line_height: 1.2;
+$base_line: 16px * $line_height;
+
+@mixin standard_font {
+    font-size: $base_font;
+    line-height: $line_height;
+    font-family: 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* minimal reset */
+html, body, ul, li, h1, h2, p {
+    margin: 0;
+    padding: 0;
+    font-size: $base_font;
+}
+
+li {
+    list-style: none;
+}
+
+html, body {
+    @include standard_font;
+    background: #555;
+    color: white;
+}
+
+/* "site" styles */
+body {
+}
+
+a {
+    text-decoration: none;
+    color: #fff;
+}
+
+b {
+    @include hide-content;
+}
+
+button,
+input[type=text],
+input[type=url],
+textarea {
+    @include standard_font;
+    background: white;
+    color: black;
+    border: none;
+    padding: 3px 9px;
+    cursor: pointer;
+}
+
+#body {
+    @include contain-floated-children;
+    padding: 30px;
+}
+
+header {
+    background: #000;
+
+    nav {
+        @include contain-floated-children;
+        padding: 10px 30px;
+
+        li {
+            list-style: none;
+            float: left;
+            margin-right: 30px;
+            padding: 5px 9px;
+
+            &:last-child {
+                margin-right: 40px;
+            }
+
+            a {
+                color: white;
+            }
+        }
+    }
+}
+
+footer {
+    border-top: 1px dashed #666;
+    padding: 10px 30px;
+    margin-bottom: 50px;
 }

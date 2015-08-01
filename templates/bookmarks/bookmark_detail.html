@@ -1,32 +1,73 @@
-<h1><a href='{{bookmark.url}}'>{{bookmark}}</a></h1>
-{% if bookmark.latest_archive %}
-  {% if bookmark.latest_archive.thumbnail %}
-    <img src='{{bookmark.latest_archive.thumbnail.url}}'>
-  {% endif %}
-{% endif %}
+{% extends "base.html" %}
+{% load markdown_transform %}
 
-<p>{{bookmark.description}}</p>
-{% if bookmark.tags %}
-  <ul>
-    {% for tag in bookmark.tags.all %}
-      <li>
-        <a href='{% url "tagged-list" tag.slug %}'>{{tag}}</a>
-        <form method='post' action='{% url "bookmark-tag-update" bookmark.pk %}'>
-          {% csrf_token %}
-          <input type='hidden' name='update' value='remove'>
-          <input type='hidden' name='tags' value='{{tag}}'>
-          <button>Remove tag</button>
-        </form>
-        </li>
-    {% endfor %}
-  </ul>
-{% endif %}
+{% block head_title_page %}{{bookmark}}{% endblock %}
+{% block body_class %}bookmark{% endblock %}
 
-<p>{{bookmark.date_added}} — {{bookmark.last_updated}}</p>
+{% block body %}
+  <div class='details'>
+    <h1>
+      <em><a href='{{bookmark.url}}'>{{bookmark}}</a></em>
+      <b>on</b>
+      <code>{{bookmark.domain}}</code>
+    </h1>
 
-<form method='post' action='{% url "bookmark-tag-update" bookmark.pk %}'>
-  {% csrf_token %}
-  <input type='hidden' name='update' value='add'>
-  <input type='text' name='tags'>
-  <button>Add tags</button>
-</form>
+    <div class='description'>
+      {% if bookmark.description %}
+        {{bookmark.description|from_markdown}}
+      {% endif %}
+    </div>
+
+    <dl>
+      <dt>Added</dt>
+      <dd>{{bookmark.date_added}}</dd>
+      <dt>Updated</dt>
+      <dd>{{bookmark.last_updated}}</dd>
+    </dl>
+
+    <div class='tags'>
+      <h2>Tags</h2>
+      {% if bookmark.tags %}
+        <ul>
+          {% for tag in bookmark.tags.all %}
+            <li>
+              <a href='{% url "tagged-list" tag.slug %}'>{{tag}}</a>
+              <form method='post' action='{% url "bookmark-tag-update" bookmark.pk %}'>
+                {% csrf_token %}
+                <input type='hidden' name='update' value='remove'>
+                <input type='hidden' name='tags' value='{{tag}}'>
+                <button><b>Remove tag {{tag}}</b></button>
+              </form>
+              </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      <form method='post' action='{% url "bookmark-tag-update" bookmark.pk %}'>
+        {% csrf_token %}
+        <input type='hidden' name='update' value='add'>
+        <input type='text' name='tags'>
+        <button>Add tags</button>
+      </form>
+
+      <form method='get' action='{% url "bookmark-update" bookmark.pk %}'>
+        <button>Edit bookmark</button>
+      </form>
+    </div>
+
+  </div>
+
+  <div class='archive'>
+    <h2>Archives</h2>
+    {% with archive=bookmark.latest_archive %}
+      {% if bookmark.latest_archive %}
+        <p>Archived <a href='{{archive.archive.url}}'>{{archive.taken}}</a></p>
+        {% if archive.thumbnail %}
+          <a href='{{archive.screengrab.url}}' target='_blank'>
+            <img src='{{archive.screengrab.url}}'>
+          </a>
+        {% endif %}
+      {% endif %}
+    {% endwith %}
+  </div>
+{% endblock %}

@@ -1,0 +1,21 @@
+ul.pagination {
+    li {
+        display: inline-block;
+        margin-right: 20px;
+
+        a {
+            display: block;
+            padding: 2px 5px;
+            outline: 1px solid white;
+        }
+
+        em {
+            display: block;
+            padding: 2px 5px;
+            background: white;
+            color: black;
+            font-style: normal;
+            font-weight: bold;
+        }
+    }
+}

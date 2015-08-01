@@ -1,0 +1,31 @@
+{% extends "cape/base.html" %}
+{% load staticfiles %}
+
+{% block head_title %}{% block head_title_page %}SET TITLE{% endblock %} — bookmarks.dev{% endblock %}
+
+{% block head_css_stylesheet %}
+    <link type='text/css' rel='stylesheet' href='{% static "css/screen.css" %}'>
+{% endblock %}
+
+{% block body_sheath %}
+  <header>
+    <nav>
+      <ul>
+        <li><a href='{% url "bookmark-create" %}'>Add bookmark</a></li>
+        <li><a href='{% url "bookmark-list" %}'>All {{total_bookmarks}} bookmarks</a></li>
+      </ul>
+      {% block header_search %}
+        <form method='get' action='{% url "haystack_search" %}'>
+          <input type='text' name='q' placeholder='Search...'>
+          <button>Search</button>
+        </form>
+      {% endblock %}
+    </nav>
+  </header>
+
+  <div id='body'>
+    {% block body %}{% endblock %}
+  </div>
+
+  <footer></footer>
+{% endblock %}

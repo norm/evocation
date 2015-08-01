@@ -1,3 +1,4 @@
 *.pyc
 xapian_index
 media
+static/css/screen.css

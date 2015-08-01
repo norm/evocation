@@ -1,0 +1,24 @@
+body.add-bookmark #body {
+    form {
+        label {
+            display: block;
+            margin-top: $base_line;
+            font-weight: bold;
+        }
+
+        input,
+        textarea {
+            width: 80%;
+        }
+
+        button {
+            display: block;
+            margin-top: $base_line;
+        }
+    }
+
+    ul.errorlist li {
+        color: #f88;
+        font-weight: bold;
+    }
+}

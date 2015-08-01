@@ -1,22 +1,48 @@
-{% load concertina_pagination %}
+{% extends "base.html" %}
+{% load aggregation concertina_pagination markdown_transform render_as %}
 
-<ul>
-{% for page in page_obj|concertina_pagination %}
-  <li><a href='?page={{page}}'>{{page}}</a></li>
-{% endfor %}
-</ul>
-<hr>
+{% block body_class %}bookmarks list{% endblock %}
+{% block head_title_page %}All bookmarks{% endblock %}
 
-{% for bookmark in object_list %}
-  <li>
-    <h1><a href='{% url "bookmark-detail" bookmark.pk %}'>{{bookmark}}</a></h1>
-    <p>{{bookmark.description}}</p>
-    <ul>
-      {% for tag in bookmark.tags.all %}
-        <li>
-          <a href='{% url "tagged-list" tag.slug %}'>{{tag}}</a>
-        </li>
-      {% endfor %}
-    </ul>
-  </li>
-{% endfor %}
+{% block body %}
+  <div id='subnav'>
+    <div id='tags'>
+      <h1>Navigate by tag</h1>
+      <ul class='tags all'>
+        {% for tag in all_tags %}
+          <li><a href='{% url "tagged-list" tag.slug %}'>{{tag}}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div id='time'>
+      <h1>Navigate by time</h1>
+      <ul>
+        {% for y in all_bookmarks|by_year %}
+          {% with year=y|date:'Y' %}
+            <li><a href='{% url "bookmark-by-year" year %}'>{{ year }}</a></li>
+            {% endwith %}
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <h1>{% block matching_bookmarks %}All bookmarks{% endblock %}</h1>
+  <ul class='bookmarks'>
+    {% for bookmark in object_list %}
+      {% render_as bookmark "in_list" %}
+    {% endfor %}
+  </ul>
+
+  {% if paginator.num_pages > 1 %}
+  <ul class='pagination'>
+    {% for page in page_obj|concertina_pagination %}
+      {% if page == page_obj.number %}
+        <li><em>{{page}}</em></li>
+      {% else %}
+        <li><a href='?page={{page}}'>{{page}}</a></li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+  {% endif %}
+{% endblock %}

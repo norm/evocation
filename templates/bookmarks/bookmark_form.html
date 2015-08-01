@@ -1,9 +1,22 @@
-{% if bookmark %}
-  <a href='{{bookmark.get_absolute_url}}'>{{bookmark}}</a>
-{% endif %}
+{% extends "base.html" %}
 
-<form method="post" action="">
-  {% csrf_token %}
-  {{ form }}
-  <button>Save bookmark</button>
-</form>
+{% block body_class %}add-bookmark{% endblock %}
+{% block head_title_page %}Add new bookmark{% endblock %}
+
+{% block body %}
+  {% if bookmark %}
+    <a href='{{bookmark.get_absolute_url}}'>{{bookmark}}</a>
+  {% endif %}
+
+  <form method="post" action="">
+    {% csrf_token %}
+    {{ form }}
+    <button>Add bookmark</button>
+  </form>
+{% endblock %}
+
+{% block javascript_enhance %}
+  <script>
+    document.getElementById('id_url').focus();
+  </script>
+{% endblock %}

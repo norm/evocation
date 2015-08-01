@@ -7,6 +7,7 @@ from biplist import readPlist as read_plist
 from bs4 import BeautifulSoup
 from redis import Redis
 from tempfile import mkstemp
+from urlparse import urlparse
 
 from django.conf import settings
 from django.contrib.sites.models import get_current_site
@@ -102,6 +103,13 @@ class Bookmark(PubSubMixin, models.Model):
 
     def save_message_text(self):
         return u'Saved %s — %s' % (self.__unicode__(), self.get_absolute_url())
+
+    def domain(self):
+        domain = urlparse(self.url)[1]
+        if domain.startswith('www.'):
+            return domain[4:]
+        else:
+            return domain
 
     def name(self):
         return self.__unicode__()

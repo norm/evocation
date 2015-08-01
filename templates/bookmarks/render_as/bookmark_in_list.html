@@ -1,0 +1,34 @@
+{% load staticfiles %}
+
+<li>
+  <h2>
+    <a href='{{object.url}}'>
+      {% if object.latest_archive and object.latest_archive.thumbnail %}
+        <img src='{{object.latest_archive.thumbnail.url}}'>
+      {% else %}
+        <img src='{% static "bookmark_placeholder.png" %}'>
+      {% endif %}
+    </a>
+    <a href='{% url "bookmark-detail" object.pk %}'>
+      <span>{{object}}</span>
+    </a>
+  </h2>
+
+  {% comment %}
+    {% if object.description %}
+      <div class='description'>
+        {{object.description|from_markdown}}
+      </div>
+    {% endif %}
+
+    <ul class='tags'>
+      {% for tag in object.tags.all %}
+        <li>
+          <a href='{% url "tagged-list" tag.slug %}'>{{tag}}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endcomment %}
+
+  <p class='domain'>{{object.domain}}</p>
+</li>
