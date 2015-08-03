@@ -3,6 +3,8 @@ evocation
 
 A django app for bookmarking web pages.
 
+![evocation preview](https://raw.github.com/norm/evocation/master/evocation.png)
+
 Currently depends on command line tools only available for OS X.
 
 
