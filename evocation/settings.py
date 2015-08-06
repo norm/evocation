@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+from datetime import timedelta
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -138,3 +139,13 @@ BROKER_URL = os.getenv('EVOCATION_REDIS_DB', 'redis://localhost:6379/1')
 
 PINBOARD_AUTH = os.getenv('PINBOARD_AUTH')
 PINBOARD_PUSH = 'true' == os.getenv('PINBOARD_PUSH')
+PINBOARD_PULL = 'true' == os.getenv('PINBOARD_PULL')
+
+if PINBOARD_PULL:
+    CELERY_TIMEZONE = 'UTC'
+    CELERYBEAT_SCHEDULE = {
+        'pinboard-pull': {
+            'task': 'apps.bookmarks.tasks.pull_from_pinboard',
+            'schedule': timedelta(hours = 1),
+        },
+    }
