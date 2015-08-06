@@ -106,7 +106,7 @@ class Bookmark(PubSubMixin, models.Model):
         connections['default'].get_unified_index().get_index(Bookmark).update_object(self)
 
     def save_message_text(self):
-        return u'Saved %s — %s' % (self.__unicode__(), self.get_absolute_url())
+        return u'Saved %s — http://bookmark.dev/%s' % (self.__unicode__(), self.get_absolute_url())
 
     def domain(self):
         domain = urlparse(self.url)[1]
