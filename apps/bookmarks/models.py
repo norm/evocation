@@ -16,6 +16,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
 
+from haystack import connections
 from taggit.managers import TaggableManager
 from taggit.utils import parse_tags
 
@@ -101,6 +102,9 @@ class Bookmark(PubSubMixin, models.Model):
             return plist['WebMainResource']['WebResourceData']
         return None
 
+    def update_search_index(self):
+        connections['default'].get_unified_index().get_index(Bookmark).update_object(self)
+
     def save_message_text(self):
         return u'Saved %s — %s' % (self.__unicode__(), self.get_absolute_url())
 
@@ -170,10 +174,9 @@ class BookmarkArchive(PubSubMixin, models.Model):
         # check for a title if we don't already have one
         if not self.bookmark.title:
             self.bookmark.title = self.bookmark.archived_title()
+            self.bookmark.save()
 
-        # updates last_updated and triggers search reindex, so
-        # the body text is now included in search model
-        self.bookmark.save()
+        self.bookmark.update_search_index()
 
     def take_screengrab(self):
         if not self.archive:
