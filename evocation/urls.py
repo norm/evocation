@@ -30,6 +30,7 @@ from apps.bookmarks.views import (
     TagsList,
     TaggedList,
     BookmarkArchiveUpdate,
+    BookmarkDelete,
 )
 from evocation.views import homepage_redirect
 
@@ -76,6 +77,11 @@ urlpatterns = [
         r'^bookmark/id/(?P<pk>\d+)/edit/$',
             BookmarkUpdate.as_view(),
             name='bookmark-update',
+    ),
+    url(
+        r'^bookmark/id/(?P<pk>\d+)/delete/$',
+            BookmarkDelete.as_view(),
+            name='bookmark-delete',
     ),
     url(
         r'^bookmark/id/(?P<pk>\d+)/rearchive/$',

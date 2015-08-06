@@ -53,6 +53,10 @@
       <form method='get' action='{% url "bookmark-update" bookmark.pk %}'>
         <button>Edit bookmark</button>
       </form>
+
+      <form method='get' action='{% url "bookmark-delete" bookmark.pk %}'>
+        <button>Delete bookmark</button>
+      </form>
     </div>
 
   </div>

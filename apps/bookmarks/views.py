@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.views.generic import (
     CreateView,
@@ -7,6 +8,7 @@ from django.views.generic import (
     YearArchiveView,
     MonthArchiveView,
     DayArchiveView,
+    DeleteView,
 )
 from django.views.generic.detail import SingleObjectMixin
 
@@ -74,6 +76,11 @@ class BookmarkArchiveUpdate(UpdateView):
         self.object = self.get_object()
         self.object.update_archive()
         return HttpResponseRedirect(self.get_success_url())
+
+
+class BookmarkDelete(DeleteView):
+    model = Bookmark
+    success_url = reverse_lazy('bookmark-list')
 
 
 class BookmarkTagUpdate(UpdateView):
