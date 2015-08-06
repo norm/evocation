@@ -71,6 +71,11 @@
     {% endfor %}
     </ul>
 
+    <form method='post' action='{% url "bookmark-rearchive" bookmark.pk %}'>
+      {% csrf_token %}
+      <button>Fetch new archive</button>
+    </form>
+
     {% with archive=bookmark.latest_archive %}
       {% if archive and archive.thumbnail %}
         <a href='{{archive.screengrab.url}}' target='_blank'>

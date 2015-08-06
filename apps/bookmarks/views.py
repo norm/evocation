@@ -67,6 +67,15 @@ class BookmarkUpdate(UpdateView):
     fields = ['url', 'title', 'description', 'tags']
 
 
+class BookmarkArchiveUpdate(UpdateView):
+    model = Bookmark
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.update_archive()
+        return HttpResponseRedirect(self.get_success_url())
+
+
 class BookmarkTagUpdate(UpdateView):
     model = Bookmark
     fields = ['tags']
