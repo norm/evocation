@@ -6,7 +6,7 @@
       {% if object.latest_archive and object.latest_archive.thumbnail %}
         <img src='{{object.latest_archive.thumbnail.url}}'>
       {% else %}
-        <img src='{% static "bookmark_placeholder.png" %}'>
+        <img src='{% static "thumbnail_placeholder.png" %}'>
       {% endif %}
     </a>
     <a href='{% url "bookmark-detail" object.pk %}'>

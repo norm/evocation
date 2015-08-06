@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load markdown_transform %}
+{% load markdown_transform staticfiles %}
 
 {% block head_title_page %}{{bookmark}}{% endblock %}
 {% block body_class %}bookmark{% endblock %}
@@ -59,14 +59,25 @@
 
   <div class='archive'>
     <h2>Archives</h2>
+    <ul>
+    {% for archive in bookmark.archives.all %}
+      {% if archive.archive %}
+        <li>Archived <a href='{{archive.archive.url}}'>{{archive.taken}}</a></li>
+      {% else %}
+        <li>Archive {{archive.taken}} in progress</li>
+      {% endif %}
+    {% empty %}
+      <li>No archives.</li>
+    {% endfor %}
+    </ul>
+
     {% with archive=bookmark.latest_archive %}
-      {% if bookmark.latest_archive %}
-        <p>Archived <a href='{{archive.archive.url}}'>{{archive.taken}}</a></p>
-        {% if archive.thumbnail %}
-          <a href='{{archive.screengrab.url}}' target='_blank'>
-            <img src='{{archive.screengrab.url}}'>
-          </a>
-        {% endif %}
+      {% if archive and archive.thumbnail %}
+        <a href='{{archive.screengrab.url}}' target='_blank'>
+          <img src='{{archive.screengrab.url}}'>
+        </a>
+      {% else %}
+        <img src='{% static "bookmark_placeholder.png" %}'>
       {% endif %}
     {% endwith %}
   </div>
