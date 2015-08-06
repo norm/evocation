@@ -68,6 +68,23 @@ class BookmarkUpdate(UpdateView):
     model = Bookmark
     fields = ['url', 'title', 'description', 'tags']
 
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        errors = form.errors.as_data()
+
+        # empty tag field is not an error
+        no_tags = 'tags' not in form.cleaned_data
+        if no_tags:
+            form.cleaned_data.update({'tags': []})
+            del form.errors['tags']
+            del errors['tags']
+
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
 
 class BookmarkArchiveUpdate(UpdateView):
     model = Bookmark
