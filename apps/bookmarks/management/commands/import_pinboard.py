@@ -20,10 +20,11 @@ class Command(BaseCommand):
                 timestamp = datetime.strptime(bookmark['time'], "%Y-%m-%dT%H:%M:%SZ")
                 timestamp = pytz.utc.localize(timestamp)
 
-                db_bookmark = Bookmark.objects.create(
+                db_bookmark, created = Bookmark.objects.get_or_create(
                     url=bookmark['href'],
                     title=bookmark['description'],
                     description=bookmark['extended'],
                     date_added=timestamp,
                 )
-                db_bookmark.add_tags(bookmark['tags'])
+                if created:
+                    db_bookmark.add_tags(bookmark['tags'])
