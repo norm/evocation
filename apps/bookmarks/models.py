@@ -145,11 +145,19 @@ class BookmarkArchive(PubSubMixin, models.Model):
         handle, temp_file = mkstemp('.webarchive')
         os.close(handle)
 
-        subprocess.check_call([
-            'webarchiver',
-            '-url',    self.bookmark.url,
-            '-output', temp_file,
-        ])
+        try:
+            subprocess.check_call([
+                'webarchiver',
+                '-url',    self.bookmark.url,
+                '-output', temp_file,
+            ])
+        except subprocess.CalledProcessError:
+            self.publish_message('Error creating archive of %s [%d]' % (
+                self.bookmark.url,
+                self.bookmark.pk,
+            ))
+            return
+
         with open(temp_file, 'rb') as handle:
             model_file = File(handle)
             filename = self.filename('webarchive')
@@ -175,30 +183,48 @@ class BookmarkArchive(PubSubMixin, models.Model):
         os.close(handle)
 
         archive_as_url = 'file://%s/%s' % (settings.MEDIA_ROOT, self.archive)
-        subprocess.check_call([
-            'webkit2png',
-            '--width=1280',
-            '--fullsize',
-            '--clipped',
-            '--clipwidth=320',
-            '--clipheight=240',
-            '-o', temp_file,
-            archive_as_url
-        ])
+        try:
+            subprocess.check_call([
+                'webkit2png',
+                '--width=1280',
+                '--fullsize',
+                '--clipped',
+                '--clipwidth=320',
+                '--clipheight=240',
+                '-o', temp_file,
+                archive_as_url
+            ])
+        except subprocess.CalledProcessError:
+            self.publish_message('Error (subprocess) creating screenshot of %s [%d]' % (
+                self.bookmark.url,
+                self.bookmark.pk,
+            ))
+            return
 
-        # save full image
-        with open('%s-full.png' % temp_file, 'rb') as handle:
-            model_file = File(handle)
-            filename = self.filename('full.png')
-            self.screengrab.save(filename, model_file, save=False)
+        # sometimes webkit2png times out, but doesn't return an error value
+        full_image = '%s-full.png' % temp_file
+        thumbnail = '%s-clipped.png' % temp_file
+        if os.path.isfile(full_image):
+            # save full image
+            with open(full_image, 'rb') as handle:
+                model_file = File(handle)
+                filename = self.filename('full.png')
+                self.screengrab.save(filename, model_file, save=False)
 
-        # save thumbnail
-        with open('%s-clipped.png' % temp_file, 'rb') as handle:
-            model_file = File(handle)
-            filename = self.filename('clipped.png')
-            self.thumbnail.save(filename, model_file)
+            # save thumbnail
+            with open(thumbnail, 'rb') as handle:
+                model_file = File(handle)
+                filename = self.filename('clipped.png')
+                self.thumbnail.save(filename, model_file)
 
-        os.remove(temp_file)
+            os.remove(full_image)
+            os.remove(thumbnail)
+            os.remove(temp_file)
+        else:
+            self.publish_message('Error (file not found) creating screenshot of %s [%d]' % (
+                self.bookmark.url,
+                self.bookmark.pk,
+            ))
 
     def publish_save_message(self):
         pass
