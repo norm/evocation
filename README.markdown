@@ -24,7 +24,7 @@ Have redis (evocation uses database 1 to keep celery information in):
 
 Install pre-requisite OS X software with homebrew:
 
-    brew install libtiff libjpeg webp little-cms2 webkit2png xapian
+    brew install libjpeg libtiff little-cms2 webarchiver webkit2png webp xapian
 
 Create a virtualenv and install the required python libraries:
 
@@ -41,11 +41,6 @@ version of xapian you have installed (`brew info xapian`).
     ./configure --with-python
     make 
     sudo make install
-
-Creating permanent archives of bookmarked pages uses a command line tool
-`webarchiver` that is not currently available via homebrew. Follow these 
-[helpful instructions on compiling it][wa] and put in somewhere in your
-`$PATH`.
 
 Setup the database tables:
 
