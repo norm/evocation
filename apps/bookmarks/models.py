@@ -17,8 +17,9 @@ from django.db import models
 from django.utils import timezone
 
 from haystack import connections
+from pinboard import Pinboard
 from taggit.managers import TaggableManager
-from taggit.utils import parse_tags
+from taggit.utils import parse_tags, edit_string_for_tags
 
 from .tasks import update_bookmark_archive
 
@@ -51,6 +52,18 @@ class Bookmark(PubSubMixin, models.Model):
         super(Bookmark, self).save(*args, **kwargs)
         self.create_first_archive()
 
+        if settings.PINBOARD_PUSH:
+            # title is required (and if not set on first creation
+            # will be after an archive is fetched)
+            if self.title:
+                pb = Pinboard('mnfrancis:E96FC15298FBD1B37A27')
+                pb.posts.add(
+                    url = self.url,
+                    description = unicode(self.title).encode('utf-8'),
+                    extended = unicode(self.description).encode('utf-8'),
+                    tags = unicode(self.tags_as_string()).encode('utf-8'),
+                )
+
     def add_tag(self, tag):
         self.tags.add(tag)
         self.save()
@@ -62,6 +75,9 @@ class Bookmark(PubSubMixin, models.Model):
     def remove_tag(self, tag):
         self.tags.remove(tag)
         self.save()
+
+    def tags_as_string(self):
+        return edit_string_for_tags(self.tags.all())
 
     def get_absolute_url(self):
         return reverse('bookmark-detail', kwargs={'pk': self.pk})
