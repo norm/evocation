@@ -135,3 +135,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 BROKER_URL = os.getenv('EVOCATION_REDIS_DB', 'redis://localhost:6379/1')
+
+PINBOARD_AUTH = os.getenv('PINBOARD_AUTH')
