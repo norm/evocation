@@ -4,6 +4,8 @@ from __future__ import absolute_import
 from datetime import datetime
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
+from django.core.validators import URLValidator
 from django.utils import timezone
 
 from celery import shared_task
@@ -34,8 +36,15 @@ def pull_from_pinboard():
     print '** Pulling new bookmarks from Pinboard'
     pb = Pinboard(settings.PINBOARD_AUTH)
     recent = pb.posts.recent()
+    val = URLValidator()
 
     for bookmark in recent['posts']:
+        try:
+            val(bookmark.url)
+        except (ValidationError, ValueError) as e:
+            print ' ** ', e, bookmark.url
+            continue
+
         timestamp = timezone.make_aware(
             bookmark.time,
             timezone.get_current_timezone()
