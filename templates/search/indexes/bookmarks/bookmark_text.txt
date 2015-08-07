@@ -2,4 +2,5 @@
 {{object.archived_title}}
 {{object.description}}
 {{object.url}}
+{{object.tags_as_string}}
 {{object.archived_text_for_search_indexing}}
