@@ -99,7 +99,7 @@ urlpatterns = [
             name='tags-list',
     ),
     url(
-        r'^tag/(?P<slug>[A-Za-z0-9-]+)$',
+        r'^tag/(?P<slug>[A-Za-z0-9_-]+)$',
             TaggedList.as_view(),
             name='tagged-list',
     ),
