@@ -17,6 +17,14 @@ def update_bookmark_archive(pk):
 
 
 @shared_task
+def update_site_favicon(domain, icon):
+    from .models import Website
+
+    site, created = Website.objects.get_or_create(domain = domain)
+    site.update_favicon(icon)
+
+
+@shared_task
 def pull_from_pinboard():
     from .models import Bookmark
 

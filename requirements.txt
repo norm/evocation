@@ -18,3 +18,5 @@ Markdown==2.6.2
 django-cape==1.0
 django-render-as==1.0
 pinboard==0.5.10
+requests==2.7.0
+html5lib==0.999999

@@ -30,5 +30,10 @@
     </ul>
   {% endcomment %}
 
-  <p class='domain'>{{object.domain}}</p>
+  <p class='domain'>
+    {% if object.site.favicon %}
+      <img src='{{object.site.favicon.url}}'>
+    {% endif %}
+    {{object.site}}
+  </p>
 </li>

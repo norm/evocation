@@ -16,7 +16,6 @@ ul.bookmarks {
         padding: $bookmark_padding;
         margin-right: 30px;
         margin-bottom: 30px;
-        // margin: 30px;
         background: #fff;
         color: black;
         box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.5);
@@ -24,17 +23,6 @@ ul.bookmarks {
         max-width: $single_bookmark_width - $bookmark_padding * 2;
         border-radius: $corner_curve;
         float: left;
-
-        img {
-            width: $single_bookmark_width;
-            height: $image_height;
-            display: block;
-            border-top-right-radius: $corner_curve;
-            border-top-left-radius: $corner_curve;
-            margin: 0 - $bookmark_padding;
-            margin-top: 0 - $image_height - $bookmark_padding;
-            margin-bottom: $corner_curve;
-        }
 
         h2 {
             font-weight: normal;
@@ -49,20 +37,37 @@ ul.bookmarks {
             a {
                 color: black;
             }
-        }
 
-        .description {
-            // font-family: Baskerville;
+            img {
+                width: $single_bookmark_width;
+                height: $image_height;
+                display: block;
+                border-top-right-radius: $corner_curve;
+                border-top-left-radius: $corner_curve;
+                margin: 0 - $bookmark_padding;
+                margin-top: 0 - $image_height - $bookmark_padding;
+                margin-bottom: $corner_curve;
+            }
         }
 
         .domain {
             margin-top: $corner_curve;
             margin-bottom: 0 - $corner_curve;
             font-size: 9px;
+            clear: both;
             font-family: Monaco, monospace;
             color: #999;
-            height: 11px;
+            height: 12px;
+            line-height: 12px;
             overflow: hidden;
+
+            img {
+                float: left;
+                display: block;
+                margin-right: 4px;
+                width: 12px;
+                height: 12px;
+            }
         }
     }
 }

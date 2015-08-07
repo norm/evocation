@@ -6,8 +6,9 @@ import subprocess
 from biplist import readPlist as read_plist
 from bs4 import BeautifulSoup
 from redis import Redis
-from tempfile import mkstemp
-from urlparse import urlparse
+import requests
+from tempfile import mkstemp, NamedTemporaryFile
+from urlparse import urlparse, urljoin
 
 from django.conf import settings
 from django.contrib.sites.models import get_current_site
@@ -21,7 +22,7 @@ from pinboard import Pinboard
 from taggit.managers import TaggableManager
 from taggit.utils import parse_tags, edit_string_for_tags
 
-from .tasks import update_bookmark_archive
+from .tasks import update_bookmark_archive, update_site_favicon
 
 
 class PubSubMixin(object):
@@ -46,9 +47,13 @@ class Bookmark(PubSubMixin, models.Model):
     description = models.TextField(null=True, blank=True)
     date_added = models.DateTimeField(default=timezone.now)
     last_updated = models.DateTimeField(auto_now=True)
+    site = models.ForeignKey('Website', related_name='bookmarks', null=True, blank=True)
     tags = TaggableManager()
 
     def save(self, *args, **kwargs):
+        if not self.site:
+            site, created = Website.objects.get_or_create(domain = self.get_url_domain())
+            self.site = site
         super(Bookmark, self).save(*args, **kwargs)
         self.create_first_archive()
 
@@ -98,14 +103,14 @@ class Bookmark(PubSubMixin, models.Model):
     def archived_title(self):
         body = self.get_archive_body()
         if body is not None:
-            soup = BeautifulSoup(body, 'html.parser')
+            soup = BeautifulSoup(body, 'html5lib')
             return soup.title.text
         return None
 
     def archived_text(self):
         body = self.get_archive_body()
         if body is not None:
-            soup = BeautifulSoup(body, 'html.parser')
+            soup = BeautifulSoup(body, 'html5lib')
             for element in soup(['script', 'style', 'svg']):
                 element.replace_with('')
             return soup.body.get_text()
@@ -120,11 +125,35 @@ class Bookmark(PubSubMixin, models.Model):
 
     def update_search_index(self):
         connections['default'].get_unified_index().get_index(Bookmark).update_object(self)
+        self.register_favicon()
+
+    def register_favicon(self):
+        body = self.get_archive_body()
+        if body is not None:
+            soup = BeautifulSoup(body, 'html5lib')
+            link = soup.find('link', rel='shortcut icon')
+            icon = None
+            if link:
+                icon = link['href']
+            else:
+                link = soup.find('link', rel='Shortcut Icon')
+                if link:
+                    icon = link['href']
+                else:
+                    link = soup.find('link', rel='icon')
+                    if link:
+                        icon = link['href']
+            
+            if not icon:
+                icon = '/favicon.ico'
+
+            icon = urljoin(self.url, icon)
+            update_site_favicon.delay(self.get_url_domain(), icon)
 
     def save_message_text(self):
         return u'Saved %s — http://bookmark.dev/%s' % (self.__unicode__(), self.get_absolute_url())
 
-    def domain(self):
+    def get_url_domain(self):
         domain = urlparse(self.url)[1]
         if domain.startswith('www.'):
             return domain[4:]
@@ -254,3 +283,29 @@ class BookmarkArchive(PubSubMixin, models.Model):
 
     class Meta:
         ordering = ["-taken"]
+
+
+class Website(models.Model):
+    domain = models.CharField(max_length=2000)
+    favicon = models.ImageField(upload_to='favicon/', null=True, blank=True)
+
+    def update_favicon(self, icon):
+        url = urlparse(icon)
+        path, ext = os.path.splitext(icon)
+        filename = '%s%s' % (self.domain, ext)
+        req = requests.get(icon)
+
+        if req.status_code == 200:
+            temp_file = NamedTemporaryFile(suffix=ext)
+            temp_file.write(req.content)
+            temp_file.flush()
+            self.favicon.save(filename, File(temp_file), save=True)
+        else:
+            self.publish_message('Error %d fetching favicon %s for %s' % (
+                req.status_code,
+                icon,
+                self.domain,
+            ))
+
+    def __unicode__(self):
+        return self.domain
