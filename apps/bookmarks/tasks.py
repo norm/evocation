@@ -53,7 +53,8 @@ def pull_from_pinboard():
         if created:
             print '-- New bookmark created [%d] %s' % (db_bookmark.pk, db_bookmark)
             for tag in bookmark.tags:
-                db_bookmark.tags.add(tag)
+                if tag:
+                    db_bookmark.tags.add(tag)
 
 
 @shared_task
