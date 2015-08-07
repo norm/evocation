@@ -22,8 +22,13 @@ from pinboard import Pinboard
 from taggit.managers import TaggableManager
 from taggit.utils import parse_tags, edit_string_for_tags
 
-from .tasks import update_bookmark_archive, update_site_favicon
+from .tasks import update_bookmark_archive, update_site_favicon, push_to_pinboard
 
+
+ORIGINS = (
+    (1, 'User'),
+    (2, 'Pinboard'),
+)
 
 class PubSubMixin(object):
     def save(self, *args, **kwargs):
@@ -48,6 +53,7 @@ class Bookmark(PubSubMixin, models.Model):
     date_added = models.DateTimeField(default=timezone.now)
     last_updated = models.DateTimeField(auto_now=True)
     site = models.ForeignKey('Website', related_name='bookmarks', null=True, blank=True)
+    origin = models.IntegerField(choices=ORIGINS, default=1)
     tags = TaggableManager()
 
     def save(self, *args, **kwargs):
@@ -57,17 +63,11 @@ class Bookmark(PubSubMixin, models.Model):
         super(Bookmark, self).save(*args, **kwargs)
         self.create_first_archive()
 
-        if settings.PINBOARD_PUSH:
+        if self.origin == 1 and settings.PINBOARD_PUSH:
             # title is required (and if not set on first creation
             # will be after an archive is fetched)
             if self.title:
-                pb = Pinboard('mnfrancis:E96FC15298FBD1B37A27')
-                pb.posts.add(
-                    url = self.url,
-                    description = unicode(self.title).encode('utf-8'),
-                    extended = unicode(self.description).encode('utf-8'),
-                    tags = unicode(self.tags_as_string()).encode('utf-8'),
-                )
+                push_to_pinboard(self.pk)
 
     def add_tag(self, tag):
         self.tags.add(tag)

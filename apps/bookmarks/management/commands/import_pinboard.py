@@ -25,7 +25,7 @@ class Command(BaseCommand):
                         'title': bookmark['description'],
                         'description': bookmark['extended'],
                         'date_added': timestamp,
-
+                        'origin': 2,
                     },
                     url = bookmark['href'],
                 )

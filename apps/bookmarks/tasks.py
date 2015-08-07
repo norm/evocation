@@ -43,9 +43,24 @@ def pull_from_pinboard():
                     'title': bookmark.description,
                     'description': bookmark.extended,
                     'date_added': timestamp,
+                    'origin': 2,
                 },
                 url = bookmark.url,
             )
             if created:
                 for tag in bookmark.tags:
                     db_bookmark.tags.add(tag)
+
+
+@shared_task
+def push_to_pinboard(pk):
+    from .models import Bookmark
+
+    bookmark = Bookmark.objects.get(pk=pk)
+    pb = Pinboard(settings.PINBOARD_AUTH)
+    pb.posts.add(
+        url = bookmark.url,
+        description = unicode(bookmark.title).encode('utf-8'),
+        extended = unicode(bookmark.description).encode('utf-8'),
+        tags = unicode(bookmark.tags_as_string()).encode('utf-8'),
+    )
