@@ -2,4 +2,4 @@
 {{object.archived_title}}
 {{object.description}}
 {{object.url}}
-{{object.archived_text}}
+{{object.archived_text_for_search_indexing}}

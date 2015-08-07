@@ -16,6 +16,7 @@ from django.core.files import File
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
+from django.utils.html import escape
 
 from haystack import connections
 from pinboard import Pinboard
@@ -115,6 +116,15 @@ class Bookmark(PubSubMixin, models.Model):
                 element.replace_with('')
             return soup.body.get_text()
         return None
+
+    def archived_text_for_search_indexing(self):
+        body = self.archived_text()
+        words = []
+        for word in body.split():
+            # terms in xapian limited to 245 chars after they're HTML escaped
+            if len(escape(word)) < 245:
+                words.append(word)
+        return ' '.join(words)
 
     def get_archive_body(self):
         latest = self.latest_archive()
