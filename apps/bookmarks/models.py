@@ -161,7 +161,7 @@ class Bookmark(PubSubMixin, models.Model):
             update_site_favicon.delay(self.get_url_domain(), icon)
 
     def save_message_text(self):
-        return u'Saved %s — http://bookmark.dev/%s' % (self.__unicode__(), self.get_absolute_url())
+        return u'Saved %s — http://bookmarks.dev%s' % (self.__unicode__(), self.get_absolute_url())
 
     def get_url_domain(self):
         domain = urlparse(self.url)[1]
