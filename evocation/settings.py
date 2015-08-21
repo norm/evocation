@@ -29,7 +29,7 @@ if DEBUG:
 else:
     SECRET_KEY = os.environ['EVOCATION_SECRET_KEY']
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['bookmarks.dev']
 
 
 # Application definition
