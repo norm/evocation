@@ -148,4 +148,8 @@ if PINBOARD_PULL:
             'task': 'apps.bookmarks.tasks.pull_from_pinboard',
             'schedule': timedelta(hours = 1),
         },
+        'run-backups': {
+            'task': 'apps.bookmarks.tasks.run_backups',
+            'schedule': timedelta(hours = 12),
+        }
     }

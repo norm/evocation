@@ -2,6 +2,7 @@
 
 from __future__ import absolute_import
 from datetime import datetime
+import subprocess
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -80,3 +81,8 @@ def push_to_pinboard(pk):
         extended = unicode(bookmark.description).encode('utf-8'),
         tags = unicode(bookmark.tags_as_string()).encode('utf-8'),
     )
+
+
+@shared_task
+def run_backups():
+    subprocess.check_call(['sh', 'backup.sh'])
